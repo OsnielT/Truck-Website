@@ -10,7 +10,7 @@ if($conn->connect_error){
 	die( 'There was an error: <br> <br> '.$conn->connect_error);
 }
 
-$sql = "SELECT id, image, truck_name, price, towing_capacity, miles, mpg_city, mpg_highway FROM Trucks LIMIT 9";
+$sql = "SELECT * FROM Trucks";
 $result = $conn->query($sql);
 ?>
 
@@ -56,32 +56,70 @@ $result = $conn->query($sql);
 	</style>
 	<body>
 		<!-- Navigation -->
-		<?php include_once "navigation.php" ?>
+		<?php include_once "../navigation.php" ?>
 
-		<!-- Banner -->
-		<div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
-			<div class="carousel-inner">
-                 <div class="carousel-item active">
-					<img class="lazy d-block w-100" src="images/trucks1-1xs.jpg" data-src="images/trucks1-1.jpg" alt="First slide">
-				</div>
-<!-- 				<div class="carousel-item ">
-					<img class="lazy d-block w-100" src="images/trucks2.jpg" alt="Second slide">
-				</div> -->
-			</div>
-			<a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
-				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				<span class="sr-only">Previous</span>
-			</a>
-			<a class="carousel-control-next" href="#carouselExampleFade" role="button" data-slide="next">
-				<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				<span class="sr-only">Next</span>
-			</a>
-		</div>
 		<!-- Listing  -->
-		<div class="container">
-			<!-- <h1 class="my-4 text-center" style="transform: scale(1.3);font-weight: 600;color: #6d6d6d;font-family: 'montserrat';"> Trucks-<span style="font-size: 4rem;color: #FFC107;font-weight: 800;font-family: 'montserrat';padding: 0rem .5rem;margin: 0 .5rem;">4</span>-Sale!</h1> -->
-			<img class='img-logo-body' src="images/logo.png" height='auto' width="400px">
-			<div class="col-lg-12 mx-0 row">
+		<div class="container-fluid">
+			<h1 class="my-5 text-center">Inventory</h1>
+		<div class="row">
+			<div class="col-lg-3">
+				<h3><i class="fas fa-filter"></i> Filter</h3>
+				<div class="accordion" id="accordionExample">
+
+				  <div class="card">
+				    <div class="card-header" id="headingOne">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				          Year
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	  <div class="form-group">
+						    <!-- <label for="formControlRange">YEAR</label> -->
+						    <input type="range" class="form-control-range" id="formControlRange">
+						  </div>
+				        </div>
+				    </div>
+				  </div>
+
+
+				  <div class="card">
+				    <div class="card-header" id="headingtwo">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsetwo" aria-expanded="true" aria-controls="collapsetwo">
+				          Make
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="collapsetwo" class="collapse show" aria-labelledby="headingtwo" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	Stuff goes here!
+				        </div>
+				    </div>
+				  </div>
+
+				  <div class="card">
+				    <div class="card-header" id="headingthree">
+				      <h2 class="mb-0">
+				        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#headingthree" aria-expanded="true" aria-controls="headingthree">
+				          Model
+				        </button>
+				      </h2>
+				    </div>
+
+				    <div id="headingthree" class="collapse show" aria-labelledby="headingthree" data-parent="#accordionExample">
+				      <div class="card-body">
+				      	Stuff goes here!
+				        </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			<div class="col-lg-9 mx-0 row">
 
 				
 <?php 
@@ -93,7 +131,7 @@ if($result->num_rows>0){
 
 $searchString = ',';
 $whatIWant = $row['image'];
-echo '<div class="col-md-4 mt-4"><div class="card "><span class="img1">';
+echo '<div class="col-md-4 mb-4"><div class="card "><span class="img1">';
 if( strpos($whatIWant, $searchString) !== false ) {
 
 	// $whatIWant=preg_replace('/^([^,]*).*$/', '$1', $whatIWant);
@@ -102,11 +140,11 @@ $carimgs=explode(",",$whatIWant);
 
 
 
-echo '<img class="lazy card-img-top" data-src="admin/pictures/'. $carimgs[array_rand($carimgs)] . '" alt="Card image cap">';
+echo '<img class="lazy card-img-top" data-src="../admin/pictures/'. $carimgs[array_rand($carimgs)] . '" alt="Card image cap">';
 
  }else{
 
-	echo '<img class="lazy card-img-top" data-src="admin/pictures/'.$whatIWant. '" alt="Card image cap">';
+	echo '<img class="lazy card-img-top" data-src="../admin/pictures/'.$whatIWant. '" alt="Card image cap">';
  }
 
 
@@ -131,7 +169,7 @@ echo '</span><div class="card-body">
  ?>
 
 		</div>
-
+</div>
 			<div class="col-lg-12 my-2">
 				<a class="btn btn-secondary" href="admin/"><i class="fas fa-key"></i></a>
 			</div>

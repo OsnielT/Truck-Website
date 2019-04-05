@@ -12,7 +12,13 @@ if($conn->connect_error){
 	die( 'There was an error: <br> <br> '.$conn->connect_error);
 }
 
-$carid = $_GET['id'];
+if(isset($_GET['id'])){
+
+	$carid = $_GET['id'];
+
+}else{
+	header('location: /trucks');
+}
 
 $sql = "SELECT * FROM Trucks WHERE id = '$carid'";
 
@@ -70,7 +76,8 @@ box-shadow: 0 0px 10px #888;
 }
 </style>
 	<body>
-<!-- nav here --><?php include_once "../navigation.php" ?>
+<!-- nav here -->
+<?php include_once "../navigation.php" ?>
 	
 			<div class="container">
 				
