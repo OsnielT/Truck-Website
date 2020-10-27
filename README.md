@@ -6,5 +6,5 @@ This is an on going project, for trucking companies to list their trucks for sal
 # Features 
 
 • Add/Remove Listing <br>
-• Edit Listing (title, description, price, images)
+• Edit Listing (title, description, price, images) <br>
 • contact dealer regarding listing
