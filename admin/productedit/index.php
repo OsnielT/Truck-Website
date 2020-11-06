@@ -1,35 +1,22 @@
 
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "Trucks";
+require_once "../../include/db.php";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+	$carid = $_GET['id'];
 
-if($conn->connect_error){
-	die( 'There was an error: <br> <br> '.$conn->connect_error);
-}
+	$sth = $dbh->prepare("SELECT * FROM inventory WHERE id = ?");
+	$sth->execute(array($carid));
 
-$carid = $_GET['id'];
-
-$sql = "SELECT * FROM Trucks WHERE id = '$carid'";
-
-$result = $conn->query($sql);
-
-	
-
-	if($result->num_rows>0){
-		while($row = $result->fetch_assoc()){ 
+	while($row = $sth->fetch(PDO::FETCH_ASSOC)){ 
 							
 		$searchString = ',';
 		$whatIWant = $row['image'];
 		if( strpos($whatIWant, $searchString) !== false ) {
-		     $whatIWant = substr($row['image'], strpos($row['image'], ",") + 1);
-		 }else{
-		 	$whatIWant = $row['image'];
-		 }
+			$whatIWant = substr($row['image'], strpos($row['image'], ",") + 1);
+		}else{
+			$whatIWant = $row['image'];
+		}
 
 ?>
 
@@ -83,20 +70,27 @@ $result = $conn->query($sql);
 echo "<div class='col-md-8'><div class='form-group'><input type='text' class='form-control' name='truck_name' id='truck_name' placeholder='" .$row['truck_name'] . "'></div></div><div class='col-md-8'><img width='100%' height='auto' src='../pictures/".$whatIWant."'>  <div class='col-md-12 mt-3 pl-0'> <h5>Description:</h5></div>  </div><div class='col-md-4 bg-light '><h5>Price:</h5><div class='form-group'><input type='text' class='form-control' id='price' name='price' placeholder='$" .number_format($row['price']) . "'></div><h5 class='border-top pt-3 my-3 text-center' style='font-size:2rem;'>Contact Dealer!</h5><div class='form-row'><div class='form-group col-md-6'><input type='text' class='form-control' id='firstname' placeholder='First Name:' disabled></div><div class='form-group col-md-6'><input type='text' class='form-control' id='lastname' placeholder='Last Name:' disabled></div></div><div class='form-group'><input type='text' class='form-control' id='inputAddress' placeholder='City:' disabled></div><div class='form-group'><input type='text' class='form-control' id='inputAddress' placeholder='State:' disabled></div><div class='form-group'><input type='number' class='form-control' id='inputAddress' placeholder='Phone:' disabled></div><div class='form-group'><input type='text' class='form-control' id='inputAddress' placeholder='Email:' disabled></div><div class='form-group'><textarea id='textarea' class='form-control' rows='3' placeholder='Comment:' disabled></textarea></div><div class='form-group'><button class='btn btn-primary btn-lg btn-block' type='submit' disabled>Submit Form</button></div></div></div>"; 
 
 if(isset($_POST['insert'])){
- // $queryy = "UPDATE trucks SET truck_name = '$truckname' WHERE id = '$carid'";
-	$queryy = "UPDATE trucks SET";
+	$queryy = "UPDATE inventory SET";
+
 	$comma = " ";
+	$newArray = array();
 	foreach($_POST as $key => $val) {
 
 	    if( ! empty($val)) {
-	        $queryy .= $comma . $key . " = '" . mysqli_real_escape_string($conn, trim($val)) . "'";
-	        $comma = ", ";
-	    }
 
-	    $queryyy = $queryy . " WHERE id = '$carid'";
+	        $queryy .= $comma . $key . " = ?";
+			$comma = ", ";
+			$newArray[] = $val;
+	    }
+	    $queryyy = $queryy . " WHERE id = ?";
 	}
-	
-	  $sqll = mysqli_query($conn, $queryyy);
+	$newArray[] = $carid;
+
+	// echo $queryyy;
+	// var_export($newArray);
+	$stmt = $dbh->prepare($queryyy);
+	$stmt->execute($newArray);
+	// var_export($stmt->errorInfo());
 }
 
 					?>
@@ -206,9 +200,8 @@ if(isset($_POST['insert'])){
 				</div>
 
 				<?php
-						}
-					}
-							?>
+			}
+			?>
 	<!-- CONTAINER  END -->
 			</div>
 
@@ -225,5 +218,3 @@ if(isset($_POST['insert'])){
 
 	</body>
 </html>
-
-<?php $conn->close(); ?>

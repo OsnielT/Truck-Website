@@ -1,17 +1,9 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "Trucks";
+require_once "include/db.php";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$sth = $dbh->prepare("SELECT id, image, truck_name, price, towing_capacity, miles, mpg_city, mpg_highway FROM inventory LIMIT 9");
+$sth->execute();
 
-if($conn->connect_error){
-	die( 'There was an error: <br> <br> '.$conn->connect_error);
-}
-
-$sql = "SELECT id, image, truck_name, price, towing_capacity, miles, mpg_city, mpg_highway FROM Trucks LIMIT 9";
-$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -24,18 +16,18 @@ $result = $conn->query($sql);
 	    <!-- Bootstrap CSS -->
 	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"> 
 		<title>Trucks 4 Sale</title>
 
 	</head>
 	<style type="text/css">
-
 
 		.img-logo-body{
 			margin:1rem auto;
 			display: block;
 		}
 		.carousel-inner{
-			max-height: 550px;
+			max-height: 645px;
 		}
 		.list-group-item {
 			padding: .25rem 1.25rem;
@@ -46,11 +38,15 @@ $result = $conn->query($sql);
 		    transform: translate(-50%, -50%);
 		    position: absolute;
 		}
-		span.img1 {
+		.card span.img1 {
 		    overflow: hidden;
 		    height: 179px;
 		    position: relative;
-		    display: block;
+			display: block;
+			
+			background-repeat: no-repeat;
+			background-position: top center;
+			background-size: cover;
 		}
 
 	</style>
@@ -64,9 +60,6 @@ $result = $conn->query($sql);
                  <div class="carousel-item active">
 					<img class="lazy d-block w-100" src="images/trucks1-1xs.jpg" data-src="images/trucks1-1.jpg" alt="First slide">
 				</div>
-<!-- 				<div class="carousel-item ">
-					<img class="lazy d-block w-100" src="images/trucks2.jpg" alt="Second slide">
-				</div> -->
 			</div>
 			<a class="carousel-control-prev" href="#carouselExampleFade" role="button" data-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -79,53 +72,51 @@ $result = $conn->query($sql);
 		</div>
 		<!-- Listing  -->
 		<div class="container">
-			<!-- <h1 class="my-4 text-center" style="transform: scale(1.3);font-weight: 600;color: #6d6d6d;font-family: 'montserrat';"> Trucks-<span style="font-size: 4rem;color: #FFC107;font-weight: 800;font-family: 'montserrat';padding: 0rem .5rem;margin: 0 .5rem;">4</span>-Sale!</h1> -->
-			<img class='img-logo-body' src="images/logo.png" height='auto' width="400px">
+			<!-- <img class='img-logo-body' src="images/logo.png" height='auto' width="400px"> -->
+			<p class="h1 mt-4 text-center text-underline"><u>Featured Trucks</u></p>
 			<div class="col-lg-12 mx-0 row">
 
 				
 <?php 
 
+while($row = $sth->fetch(PDO::FETCH_ASSOC)){
 
+	$searchString = ',';
 
-if($result->num_rows>0){
-	while($row = $result->fetch_assoc()){
+	$whatIWant = $row['image'];
 
-$searchString = ',';
-$whatIWant = $row['image'];
-echo '<div class="col-md-4 mt-4"><div class="card "><span class="img1">';
-if( strpos($whatIWant, $searchString) !== false ) {
+	echo '
+	<div class="col-lg-3 col-md-6 col-sm-12 mt-4">
+		<div class="card ">';
+		
+		if( strpos($whatIWant, $searchString) !== false ) {
+			
+			$carimgs=explode(",",$whatIWant);
+			
+			echo '<span class="img1" style="admin/pictures/'. $carimgs[array_rand($carimgs)] . '">';
+			// echo '<img class="lazy card-img-top" data-src="admin/pictures/'. $carimgs[array_rand($carimgs)] . '" alt="Card image cap">';
+			
+		}else{
+			echo '<span class="img1" style="background-image: url(admin/pictures/'.$whatIWant. ');">';
 
-	// $whatIWant=preg_replace('/^([^,]*).*$/', '$1', $whatIWant);
-
-$carimgs=explode(",",$whatIWant);
-
-
-
-echo '<img class="lazy card-img-top" data-src="admin/pictures/'. $carimgs[array_rand($carimgs)] . '" alt="Card image cap">';
-
- }else{
-
-	echo '<img class="lazy card-img-top" data-src="admin/pictures/'.$whatIWant. '" alt="Card image cap">';
- }
-
-
-
-echo '</span><div class="card-body">
-					    <h5 class="card-title" style="text-transform: capitalize;">'.$row['truck_name'].'</h5>
-					</div>
-					<ul class="list-group list-group-flush">
-					    
-						<li class="list-group-item"><strong>Miles:</strong> <span class="text-secondary">' .number_format($row['miles']). '</span></li>
-					    <li class="list-group-item"><strong>MPG:</strong> <span class="text-secondary">' .number_format($row['mpg_city']). ' City / ' .number_format($row['mpg_highway']). ' Highway</span></li>
-						<li class="list-group-item"><strong>price:</strong> <span class="text-secondary">$' .number_format($row['price']). '</span></li>
-					</ul>
-					<div class="card-body">
-					    <a href="product/?id=' .$row['id']. '" class="btn btn-lg btn-warning btn-block">See Details</a>
-					</div>
-				</div>
-			</div>';
+			// echo '<img class="lazy card-img-top" data-src="admin/pictures/'.$whatIWant. '" alt="Card image cap">';
 	}
+
+	echo '
+			</span>
+			<div class="card-body">
+				<h5 class="card-title" style="text-transform: capitalize;">'.$row['truck_name'].'</h5>
+			</div>
+			<ul class="list-group list-group-flush">
+				<li class="list-group-item"><strong>Miles:</strong> <span class="text-secondary">' .number_format($row['miles']). '</span></li>
+				<li class="list-group-item"><strong>MPG:</strong> <span class="text-secondary">' .number_format($row['mpg_city']). ' City / ' .number_format($row['mpg_highway']). ' Highway</span></li>
+				<li class="list-group-item"><strong>Price:</strong> <span class="text-secondary">$' .number_format($row['price']). '</span></li>
+			</ul>
+			<div class="card-body">
+				<a href="product/?id=' .$row['id']. '" class="btn btn-md btn-warning btn-block">See Details</a>
+			</div>
+		</div>
+	</div>';
 }
 
  ?>
@@ -150,4 +141,3 @@ echo '</span><div class="card-body">
 	</body>
 </html>
 
-<?php $conn = null; ?>

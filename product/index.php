@@ -1,16 +1,7 @@
 
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "Trucks";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if($conn->connect_error){
-	die( 'There was an error: <br> <br> '.$conn->connect_error);
-}
+require_once "../include/db.php";
 
 if(isset($_GET['id'])){
 
@@ -20,14 +11,15 @@ if(isset($_GET['id'])){
 	header('location: /trucks');
 }
 
-$sql = "SELECT * FROM Trucks WHERE id = '$carid'";
+// $sql = "SELECT * FROM Trucks WHERE id = '$carid'";
 
-$result = $conn->query($sql);
 
-	
+$sth = $dbh->prepare("SELECT * FROM inventory WHERE id = ?");
+if(!$sth->execute(array($carid))){
+	header("location: ../");
+}
 
-	if($result->num_rows>0){
-		while($row = $result->fetch_assoc()){ 
+while($row = $sth->fetch(PDO::FETCH_ASSOC)){ 
 							
 
 ?>
@@ -41,11 +33,14 @@ $result = $conn->query($sql);
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	    <!-- Bootstrap CSS -->
 	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
+		<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 		<title><?php echo "" . $row['truck_name']; ?> - Trucks 4 Sale</title>
 
 	</head>
 <style type="text/css">
+*{
+	font-family: 'Source Sans Pro', sans-serif;
+}
 .text-bold {
     font-weight: 700!important;
 }
@@ -75,29 +70,23 @@ opacity: 1;
 box-shadow: 0 0px 10px #888;
 }
 </style>
-	<body>
+	<body class="bg-light">
 <!-- nav here -->
 <?php include_once "../navigation.php" ?>
-	
-			<div class="container">
-				
 
-				<div class="p-3 row">
-			
-					<div class="col-md-12 row p-3 bg-light">
-
-
-<?php 
-
+	<div class="container">
+		<div class="mt-4 col-md-12 row p-3 bg-white ">
+			<div class="col-12 mb-3">
+				<a class="text-muted" href="/Trucks"> <u> <i class="fas fa-long-arrow-alt-left"></i> Return to listing</u></a>						
+			</div>
+			<div class='col-md-8'>
+				<div class="mb-4">
+					<?php 
+						// Car image
 						$searchString = ',';
 						$whatIWant = $row['image'];
 
-						
-						
-						echo "<div class='col-md-12 mb-3'><h1 style='text-transform: capitalize; font-weight:800;'>" .$row['truck_name'] . "</h1></div><div class='col-md-8'>";
-
 						if( strpos($whatIWant, $searchString) !== false ) {
-
 
 							$carimg = explode( ',', $whatIWant );
 
@@ -107,149 +96,128 @@ box-shadow: 0 0px 10px #888;
 								
 								foreach($carimg as $key => $value){
 									
-									
 									$count++;
-									
 									$active = "";
-
 									if($count == '1'){ $active = "active";}else{ $active='nonactive'; }
-									
 									echo "<img width='100%' class='lazy " . $active . "'  height='auto' data-src='../admin/pictures/".$value."'> "; 
 									if($count == '1'){ echo "<img width='100%' class='lazy nonactive'  height='auto' data-src='../admin/pictures/".$value."'> ";  $active = "active";}
 								}
 
 							}else{
-
 								echo "<p style='color:red; font-size:1.3rem;'>Error with listing please contact dealer for more information.</p>";
-
 							}
 
 						 }else{
 						 	$whatIWant = $row['image'];
 						 	echo "<img class='lazy ' width='100%' height='auto' data-src='../admin/pictures/".$whatIWant."'> "; 
 						 }
+						 echo '</div>';
 
-						
+						//  new/used status
+						echo '<span class="badge badge-pill badge-secondary">New</span>';
 
-						echo "  <div class='col-md-12 mt-3 pl-0'> <h5>Description:</h5></div>  </div><div class='col-md-4 bg-light '><h5>Price:</h5><h4 class='font3'>$" .number_format($row['price']) . "</h4><h5 class='border-top pt-3 my-3 text-center' style='font-size:2rem;'>Contact Dealer!</h5><div class='form-row'><div class='form-group col-md-6'><input type='text' class='form-control' id='firstname' placeholder='First Name:'></div><div class='form-group col-md-6'><input type='text' class='form-control' id='lastname' placeholder='Last Name:'></div></div><div class='form-group'><input type='text' class='form-control' id='inputAddress' placeholder='City:'></div><div class='form-group'><input type='text' class='form-control' id='inputAddress' placeholder='State:'></div><div class='form-group'><input type='number' class='form-control' id='inputAddress' placeholder='Phone:'></div><div class='form-group'><input type='text' class='form-control' id='inputAddress' placeholder='Email:'></div><div class='form-group'><textarea id='textarea' class='form-control' rows='3' placeholder='Comment:'></textarea></div><div class='form-group'><button class='btn btn-primary btn-lg btn-block' type='submit'>Submit form</button></div></div></div>"; 
+						//  Title
+						 echo "<h3 class='mt-0 mb-3 '>" .$row['truck_name'] . "</h3>";
+
+
 
 					?>
-				</div>
-
-				<div class="row col-md-12 mb-3 bg-light ">
-
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="https://www.autotrader.com/resources/img/svgicons/Mileage.svg">
-							</div>
-				
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">MILEAGE</div>
-								<div class="text-base text-bold"><?php echo "" . number_format($row['miles']); ?></div>
-							</div>
-			
-						</div>
+					
+					<?php echo "<h6 class='text-muted mb-0'>" .number_format($row['miles']) . " miles</h6>"; ?>
+					<?php echo "<p class='h2 mt-0 font-weight-bold'>$" .number_format($row['price']) . "</p>"; ?>
+					<div class='col-md-12 mt-3 mb-4 pl-0 '> 
+						<p class="h5 font-weight-bold">Description:</p> 
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus et nibh at turpis sollicitudin eleifend a sit amet ipsum. Maecenas luctus sollicitudin laoreet. Quisque suscipit massa purus, vel elementum felis commodo ac. Maecenas accumsan, libero at tempus porttitor, purus felis posuere est, vitae efficitur felis nibh sed ante. Sed sagittis ac est a tincidunt. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam maximus semper scelerisque. Donec efficitur non est eget dignissim. Morbi vestibulum erat in bibendum accumsan.</p>
 					</div>
-
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/MPG.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">MPG</div>
-								<div class="text-base text-bold"><?php echo "".number_format($row['mpg_city']); ?> City / <?php echo "" . number_format($row['mpg_highway']); ?> Highway</div>
-							</div>
-						</div>
-					</div>
-
-
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/color.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">Color</div>
-								<div class="text-base text-bold cap-text"><?php echo "" . $row['color']; ?></div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/color.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">Interior Color</div>
-								<div class="text-base text-bold cap-text"><?php echo "" . $row['int_color']; ?></div>
-							</div>
-						</div>
-					</div>
-
-
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/engine.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">Engine</div>
-								<div class="text-base text-bold "><?php echo "" . $row['engine']; ?></div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/drivetype.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">Drive Type</div>
-								<div class="text-base text-bold "><?php echo "" . $row['drive_type']; ?></div>
-							</div>
-						</div>
-					</div>
-
-
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/FuelType.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">Fuel Type</div>
-								<div class="text-base text-bold cap-text"><?php echo "" . $row['fuel']; ?></div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 margin-bottom-4">
-						<div class="display-flex align-items-center row col-12 ">
-							<div class="col-xs-4 col-sm-3 col-md-2 col-lg-3">
-								<img class="img-responsive" src="../images/Transmission.svg">
-							</div>
-							<div class="col-xs-8 col-sm-9 col-md-10 col-lg-9">
-								<div class="text-sm text-gray text-uppercase">Transmission</div>
-								<div class="text-base text-bold cap-text"><?php echo "" . $row['transmission']; ?></div>
-							</div>
-						</div>
-					</div>
+					<p class="h5 font-weight-bold" >Specs</p>
+					<table class="table table-hover table-sm col-md-8 col-sm-12">
+						<tbody>
+						<?php 
+						echo '
+							<tr>
+								<td class="">Towing Capacity</td>
+								<td>'.number_format($row['towing_capacity']).' lb</td>
+							</tr>
+							<tr>
+								<td class="">Jacob</td>
+								<td >'.number_format($row['miles']).'</td>
+							</tr>
+							<tr>
+								<td class="">MPG</td>
+								<td>'.number_format($row['mpg_city']).'/'.number_format($row['mpg_highway']).'</td>
+							</tr>
+							<tr>
+								<td class="">Exterior Color</td>
+								<td>'.$row['color'].'</td>
+							</tr>
+							<tr>
+								<td class="">Interior Color</td>
+								<td>'.$row['int_color'].'</td>
+							</tr>
+								<tr>
+								<td class="">Engine</td>
+								<td>'.$row['engine'].'</td>
+							</tr>
+							<tr>
+								<td class="">Drive train</td>
+								<td>'.$row['drive_type'].'</td>
+							</tr>
+							<tr>
+								<td class="">Fuel Type</td>
+								<td>'.$row['fuel'].'</td>
+							</tr>
+							<tr>
+								<td class="">Transmission</td>
+								<td>'.$row['transmission'].'</td>
+							</tr>
+							';
+							?>
+						</tbody>
+					</table>
 
 				</div>
+				<div class='col-md-4 bg-light border'>
+					<h3 class=' my-3 text-center ' >Contact Dealer</h3>
+					<div class='form-row'>
+						<div class='form-group col-md-6'>
+							<input type='text' class='form-control form-control-sm' id='firstname' placeholder='First Name:'>
+						</div>
+						<div class='form-group col-md-6'>
+							<input type='text' class='form-control form-control-sm' id='lastname' placeholder='Last Name:'>
+						</div>
+					</div>
+					<div class='form-group'>
+						<input type="tel" class='form-control form-control-sm' id='inputAddress' placeholder='Phone:'>
+					</div>
+					<div class='form-group'>
+						<input type='text' class='form-control form-control-sm' id='inputAddress' placeholder='Email:'>
+					</div>
+					<div class='form-group'>
+						<textarea id='textarea' class='form-control form-control-sm' rows='3' placeholder='Comment:'></textarea>
+					</div>
+					<div class='form-group'>
+						<button class='btn btn-primary btn-md btn-block' type='submit' >Submit</button>
+					</div>
+					<p class="text-muted" style="font-size: 11px;">By clicking here, you authorize this dealer and its sellers/partners to contact you by texts/calls which may include marketing. Consent is not required to purchase goods/services.</p>
+				</div>
+					<!--END-->
+			</div>
+
+				<!-- <div class="row col-md-12 mb-3 bg-white ">
+
+					
+				</div> -->
 
 				<?php
-						}
-					}
-							?>
-	<!-- CONTAINER  END -->
-			</div>
+}
+				?>
+		
+		</div>
 
-				<div class="col-lg-12 my-2">
-					<a class="btn btn-secondary" href="/Trucks"><i class="fas fa-undo"></i> Back</a>
-					<a class="btn btn-secondary" href="admin/"><i class="fas fa-key"></i></a>
-				</div>
-			</div>
+		<div class="col-lg-12 my-2">
+			<a class="btn btn-secondary" href="/Trucks/admin/"><i class="fas fa-key"></i></a>
+		</div>
+	</div>
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -269,19 +237,6 @@ $('img.nonactive').click(function() {
 });
 
 
-
-//  var srcc = $("img.active").attr("src");
-
-// this.src = this.src.replace(srcc);
-
-
-    // if ($(this).attr("class") == "nonactive") {
-    //   this.src = this.src.replace("_off","_on");
-    // } else {
-    //   this.src = this.src.replace("_on","_off");
-    // }
-    // $(this).toggleClass("on");
-
   });
 
 </script>
@@ -296,4 +251,3 @@ $('img.nonactive').click(function() {
 	</body>
 </html>
 
-<?php $conn->close(); ?>
