@@ -1,25 +1,32 @@
 
 <?php
 
-require_once "../include/db.php";
 
 if(isset($_GET['id'])){
-
+	
 	$carid = $_GET['id'];
-
+	
 }else{
 	header('location: /trucks');
 }
 
-// $sql = "SELECT * FROM Trucks WHERE id = '$carid'";
+require_once "../include/db.php";
 
+$sth = new inventoryDB();
 
-$sth = $dbh->prepare("SELECT * FROM inventory WHERE id = ?");
-if(!$sth->execute(array($carid))){
+$TABLE = $sth->getTable();
+$ROW_LIMIT = $sth->getRowLimit();
+
+$db = $sth->dbh;
+// $db = $db->prepare("SELECT id, image, truck_name, price, towing_capacity, miles, mpg_city, mpg_highway FROM $TABLE LIMIT $ROW_LIMIT");
+// $db->execute();
+
+$db = $db->prepare("SELECT * FROM inventory WHERE id = ?");
+if(!$db->execute(array($carid))){
 	header("location: ../");
 }
 
-while($row = $sth->fetch(PDO::FETCH_ASSOC)){ 
+while($row = $db->fetch(PDO::FETCH_ASSOC)){ 
 							
 
 ?>
@@ -79,6 +86,7 @@ box-shadow: 0 0px 10px #888;
 			<div class="col-12 mb-3">
 				<a class="text-muted" href="/Trucks"> <u> <i class="fas fa-long-arrow-alt-left"></i> Return to listing</u></a>						
 			</div>
+			
 			<div class='col-md-8'>
 				<div class="mb-4">
 					<?php 

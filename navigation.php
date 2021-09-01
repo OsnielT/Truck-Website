@@ -1,3 +1,22 @@
+<?php 
+
+$BASE = "/Trucks/";
+
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+    $link = "https";
+else
+    $link = "http";
+  
+// Here append the common URL characters.
+$link .= "://";
+  
+// Append the host(domain name, ip) to the URL.
+$link .= $_SERVER['HTTP_HOST'];
+
+$link .= $BASE;
+// $link .= $_SERVER['REQUEST_URI'];
+?>
+
 <style type="text/css">
 		.navbar-dark .navbar-brand {
 		    color: #FFC107;
@@ -36,6 +55,7 @@
 			}
 		}
 </style>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"><div class="container">
 	<a class="navbar-brand mx-auto" href="/Trucks">
 		<img class="navbar-brand logo-top" alt='Trucks 4 Sale' src='/Trucks/images/logo-y.png' onerror="this.src='../images/logo-y.png'">
@@ -47,16 +67,16 @@
 	<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 		<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 			<li class="nav-item ">
-				<a class="nav-link" href="/Trucks">Home <span class="sr-only">(current)</span></a>
+				<a class="nav-link" href=<?php echo $link; ?>>Home <span class="sr-only">(current)</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="#">About</a>
+				<a class="nav-link" href=<?php echo $link; ?>>About</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="#">Contact</a>
+				<a class="nav-link" href=<?php echo $link; ?>>Contact</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="inventory/">Inventory</a>
+				<a class="nav-link" href=<?php echo $link . "inventory/"; ?>>Inventory</a>
 			</li>
 		</ul>
 		<form class="form-inline my-2 my-lg-0">

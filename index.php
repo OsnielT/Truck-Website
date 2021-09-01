@@ -1,8 +1,15 @@
 <?php
 require_once "include/db.php";
 
-$sth = $dbh->prepare("SELECT id, image, truck_name, price, towing_capacity, miles, mpg_city, mpg_highway FROM inventory LIMIT 9");
-$sth->execute();
+
+$sth = new inventoryDB();
+
+$TABLE = $sth->getTable();
+$ROW_LIMIT = $sth->getRowLimit();
+
+$db = $sth->dbh;
+$db = $db->prepare("SELECT id, image, truck_name, price, towing_capacity, miles, mpg_city, mpg_highway FROM $TABLE LIMIT $ROW_LIMIT");
+$db->execute();
 
 ?>
 
@@ -79,7 +86,7 @@ $sth->execute();
 				
 <?php 
 
-while($row = $sth->fetch(PDO::FETCH_ASSOC)){
+while($row = $db->fetch(PDO::FETCH_ASSOC)){
 
 	$searchString = ',';
 
