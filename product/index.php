@@ -31,17 +31,23 @@ while($row = $db->fetch(PDO::FETCH_ASSOC)){
 
 ?>
 
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
 
 		<meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-	    <!-- Bootstrap CSS -->
-	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-		<title><?php echo "" . $row['truck_name']; ?> - Trucks 4 Sale</title>
+	   
+		<!-- Bootstrap CSS -->
+	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+		
+		<title>Trucks 4 Sale</title>
 
 	</head>
 <style type="text/css">
@@ -83,11 +89,11 @@ box-shadow: 0 0px 10px #888;
 
 	<div class="container">
 		<div class="mt-4 col-md-12 row p-3 bg-white ">
-			<div class="col-12 mb-3">
+			<div class="col-12 mb-3 ps-0">
 				<a class="text-muted" href="/Trucks"> <u> <i class="fas fa-long-arrow-alt-left"></i> Return to listing</u></a>						
 			</div>
 			
-			<div class='col-md-8'>
+			<div class='col-md-8 ps-0'>
 				<div class="mb-4">
 					<?php 
 						// Car image
@@ -147,7 +153,7 @@ box-shadow: 0 0px 10px #888;
 								<td>'.number_format($row['towing_capacity']).' lb</td>
 							</tr>
 							<tr>
-								<td class="">Jacob</td>
+								<td class="">Miles</td>
 								<td >'.number_format($row['miles']).'</td>
 							</tr>
 							<tr>
@@ -186,35 +192,31 @@ box-shadow: 0 0px 10px #888;
 				</div>
 				<div class='col-md-4 bg-light border'>
 					<h3 class=' my-3 text-center ' >Contact Dealer</h3>
-					<div class='form-row'>
-						<div class='form-group col-md-6'>
-							<input type='text' class='form-control form-control-sm' id='firstname' placeholder='First Name:'>
+					<div class='row mb-2'>
+						<div class='col-md-6 pe-1'>
+							<input type='text' class='form-control form-control-sm' name='firstName' id='firstname' placeholder='First Name:'>
 						</div>
-						<div class='form-group col-md-6'>
-							<input type='text' class='form-control form-control-sm' id='lastname' placeholder='Last Name:'>
+						<div class='col-md-6 ps-1'>
+							<input type='text' class='form-control form-control-sm' name='lastName' id='lastname' placeholder='Last Name:'>
 						</div>
 					</div>
-					<div class='form-group'>
-						<input type="tel" class='form-control form-control-sm' id='inputAddress' placeholder='Phone:'>
+					<div class='col-md-12 mb-2'>
+						<input type="tel" class='form-control form-control-sm' name='phone' id='inputPhone' placeholder='Phone:'>
 					</div>
-					<div class='form-group'>
-						<input type='text' class='form-control form-control-sm' id='inputAddress' placeholder='Email:'>
+					<div class='col-md-12 mb-2'>
+						<input type='text' class='form-control form-control-sm' name='email' id='inputAddress' placeholder='Email:'>
 					</div>
-					<div class='form-group'>
-						<textarea id='textarea' class='form-control form-control-sm' rows='3' placeholder='Comment:'></textarea>
+					<div class='col-md-12 mb-2'>
+						<textarea id='textarea' class='form-control form-control-sm' name='comment' rows='3' placeholder='Comment:'></textarea>
 					</div>
-					<div class='form-group'>
-						<button class='btn btn-primary btn-md btn-block' type='submit' >Submit</button>
+					<div class='col-md-12 mb-2 d-grid'>
+						<button class='btn btn-primary' name='submit' type='submit' >Submit</button>
 					</div>
 					<p class="text-muted" style="font-size: 11px;">By clicking here, you authorize this dealer and its sellers/partners to contact you by texts/calls which may include marketing. Consent is not required to purchase goods/services.</p>
 				</div>
 					<!--END-->
 			</div>
 
-				<!-- <div class="row col-md-12 mb-3 bg-white ">
-
-					
-				</div> -->
 
 				<?php
 }
@@ -227,8 +229,7 @@ box-shadow: 0 0px 10px #888;
 		</div>
 	</div>
 		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 
 <script type="text/javascript">
