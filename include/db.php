@@ -1,6 +1,7 @@
-<?php 
-class inventoryDB {
-    
+<?php
+class inventoryDB
+{
+
     private $servername = "localhost";
     private $username = "root";
     private $password = "";
@@ -11,48 +12,51 @@ class inventoryDB {
 
     public $dbh = false;
 
-    function __construct()
+    public function __construct()
     {
         $this->setDbh();
         return $this->dbh;
     }
 
-    function setDbh(){
+    public function setDbh()
+    {
         try {
-            $this->dbh = new PDO('mysql:host='.$this->servername.';dbname='.$this->dbname, $this->username, $this->password,
+            $this->dbh = new PDO('mysql:host=' . $this->servername . ';dbname=' . $this->dbname, $this->username, $this->password,
                 array(
-                    PDO::ATTR_PERSISTENT => true
+                    PDO::ATTR_PERSISTENT => true,
                 )
             );
 
-        // var_export($dbh);
+            // var_export($dbh);
         } catch (PDOException $e) {
             print "Error!: " . $e->getMessage() . "<br/>";
             die();
         }
     }
 
-    function getDbh(){
+    public function getDbh()
+    {
         return $this->dbh;
     }
 
-    function getTable(){
+    public function getTable()
+    {
         return $this->table;
     }
 
-    function setTable($tableName){
+    public function setTable($tableName)
+    {
         $this->table = $tableName;
     }
 
-    function getRowLimit(){
+    public function getRowLimit()
+    {
         return $this->row_limit;
     }
 
-    function setRowLimit($limit){
+    public function setRowLimit($limit)
+    {
         $this->row_limit = $limit;
     }
 
 }
-
-
-?>
